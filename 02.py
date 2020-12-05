@@ -21,13 +21,13 @@ def is_valid_new(line):
     return p1 != p2 and (p1 == char or p2 == char)
 
 
-def part1(input):
-    return len(list(filter(is_valid_old, input)))
+def part1(line):
+    return len(list(filter(is_valid_old, line)))
 
 
-def part2(input):
-    return len(list(filter(is_valid_new, input)))
+def part2(line):
+    return len(list(filter(is_valid_new, line)))
 
 
-input = util.read_lines("input/02.txt", str)
-util.run(input, part1, part2)
+lines = util.read_lines("input/02.txt")
+util.run(part1, part2, lines)

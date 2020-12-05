@@ -3,6 +3,6 @@ def read_lines(filename, fn=str):
         return list(map(fn, file.read().splitlines()))
 
 
-def run(input, part1, part2):
-    print(part1(input))
-    print(part2(input))
+def run(part1, part2, *args):
+    print("Part 1:", part1(*args))
+    print("Part 2:", part2(*args))
