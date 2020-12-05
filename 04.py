@@ -56,9 +56,8 @@ def part2(passports):
         hgt = passport["hgt"]
         match_cm = re.match(r"^\d{3}cm$", hgt)
         match_in = re.match(r"^\d{2}in$", hgt)
-        hgt = int(hgt[:-2])
-        if not (match_cm and (150 <= hgt <= 193) or
-                match_in and (59 <= hgt <= 76)):
+        if not (match_cm and (150 <= int(hgt[:-2]) <= 193) or
+                match_in and (59 <= int(hgt[:-2]) <= 76)):
             continue
 
         if not re.match(r"^#[a-f0-9]{6}$", passport["hcl"]):
