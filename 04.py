@@ -74,10 +74,9 @@ def part2(passports):
     return valid
 
 
-lines = util.read_lines("input/04.txt")
-items = " ".join(line if line else "|" for line in lines).split("|")
-
+items = util.read("input/04.txt").split("\n\n")
 passports = []
+
 for item in items:
     passport = {}
 
