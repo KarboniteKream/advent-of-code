@@ -8,50 +8,35 @@ def part1(input):
         for bag, _ in bags:
             data.setdefault(bag, []).append(name)
 
-    result = set()
-    bags = {"shiny gold"}
+    def get_parent_bags(name):
+        if name not in data:
+            return {name}
 
-    while bags:
-        bags = {b for bag in bags for b in data.get(bag, [])}
-        result |= bags
+        bags = set(data[name])
+        for bag in data[name]:
+            bags |= get_parent_bags(bag)
+        return bags
 
-    return len(result)
+    return len(get_parent_bags("shiny gold"))
 
 
 def part2(input):
-    result = {}
+    def get_total_bags(name):
+        total = 0
+        for bag, count in input[name]:
+            total += count + (count * get_total_bags(bag))
+        return total
 
-    while input:
-        new_input = {}
-
-        for name, bags in input.items():
-            total = 0
-            ok = True
-
-            for bag, count in bags:
-                if bag not in result:
-                    ok = False
-                    break
-
-                total += count * (1 + result[bag])
-
-            if ok:
-                result[name] = total
-            else:
-                new_input[name] = bags
-
-        input = new_input
-
-    return result["shiny gold"]
+    return get_total_bags("shiny gold")
 
 
 rules = util.read_lines("input/07.txt")
 input = {}
 
 for rule in rules:
-    left, right = rule.split(" contain ")
+    left, right = rule.split(" bags contain ")
+    input[left] = []
 
-    bags = []
     for bag in right.split(", "):
         count, *name = bag.split(" ")
         if count == "no":
@@ -59,9 +44,6 @@ for rule in rules:
 
         name = " ".join(name[:-1])
         count = 0 if count == "no" else int(count)
-        bags.append((name, count))
-
-    name = left.rsplit(" ", 1)[0]
-    input[name] = bags
+        input[left].append((name, count))
 
 util.run(part1, part2, input)
