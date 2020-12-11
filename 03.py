@@ -35,5 +35,5 @@ def part2(forest):
 
 
 lines = util.read_lines("input/03.txt")
-forest = [[x for x in line] for line in lines]
+forest = [list(line) for line in lines]
 util.run(part1, part2, forest)
