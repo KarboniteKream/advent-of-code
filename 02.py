@@ -3,7 +3,7 @@ import util
 
 def is_valid_old(line):
     cnt, char, password = line.split(" ")
-    min, max = list(map(int, cnt.split("-")))
+    min, max = map(int, cnt.split("-"))
     char = char[0]
 
     num = password.count(char)
@@ -12,7 +12,7 @@ def is_valid_old(line):
 
 def is_valid_new(line):
     cnt, char, password = line.split(" ")
-    i, j = list(map(int, cnt.split("-")))
+    i, j = map(int, cnt.split("-"))
     char = char[0]
 
     p1 = password[i - 1]
