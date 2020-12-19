@@ -1,8 +1,9 @@
 import util
 
 
-def execute(memory):
+def execute(memory, input):
     ptr = 0
+    result = 0
 
     while ptr < len(memory):
         instruction = memory[ptr]
@@ -24,11 +25,10 @@ def execute(memory):
             memory[memory[ptr + 3]] = arg1 * arg2
             ptr += 4
         elif opcode == 3:
-            memory[memory[ptr + 1]] = int(input("> "))
+            memory[memory[ptr + 1]] = input
             ptr += 2
         elif opcode == 4:
-            value = util.get_arg(memory, ptr, modes, 1)
-            print(value)
+            result = util.get_arg(memory, ptr, modes, 1)
             ptr += 2
         elif opcode == 5:
             arg1 = util.get_arg(memory, ptr, modes, 1)
@@ -49,8 +49,19 @@ def execute(memory):
             memory[memory[ptr + 3]] = int(arg1 == arg2)
             ptr += 4
 
+    return result
+
+
+def part1(memory):
+    memory = list(memory)
+    return execute(memory, 1)
+
+
+def part2(memory):
+    memory = list(memory)
+    return execute(memory, 5)
+
 
 program = util.read_line("input/05.txt")
 memory = list(map(int, program.split(",")))
-
-execute(memory)
+util.run(part1, part2, memory)

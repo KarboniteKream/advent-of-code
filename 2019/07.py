@@ -2,9 +2,8 @@ import itertools
 import util
 
 
-def execute(memory, input):
-    ptr = 0
-    output = 0
+def execute(state, input):
+    memory, ptr, output = state
 
     while ptr < len(memory):
         instruction = memory[ptr]
@@ -13,7 +12,8 @@ def execute(memory, input):
         modes = instruction // 100
 
         if opcode == 99:
-            return output
+            state[:] = memory, ptr, output
+            return (output, True)
 
         if opcode == 1:
             arg1 = util.get_arg(memory, ptr, modes, 1)
@@ -31,6 +31,8 @@ def execute(memory, input):
         elif opcode == 4:
             output = util.get_arg(memory, ptr, modes, 1)
             ptr += 2
+            state[:] = memory, ptr, output
+            return (output, False)
         elif opcode == 5:
             arg1 = util.get_arg(memory, ptr, modes, 1)
             arg2 = util.get_arg(memory, ptr, modes, 2)
@@ -51,17 +53,47 @@ def execute(memory, input):
             ptr += 4
 
 
+def part1(memory):
+    result = 0
+
+    for phases in itertools.permutations(range(5)):
+        output = 0
+
+        for phase in phases:
+            state = [list(memory), 0, 0]
+            output, _ = execute(state, [phase, output])
+
+        result = max(result, output)
+
+    return result
+
+
+def part2(program):
+    result = 0
+
+    for phases in itertools.permutations(range(5, 10)):
+        states = [
+            [list(memory), 0, 0],
+            [list(memory), 0, 0],
+            [list(memory), 0, 0],
+            [list(memory), 0, 0],
+            [list(memory), 0, 0],
+        ]
+
+        inputs = [[phase] for phase in phases]
+        output = 0
+        done = False
+
+        while done is False:
+            for i in range(5):
+                inputs[i].append(output)
+                output, done = execute(states[i], inputs[i])
+
+        result = max(result, output)
+
+    return result
+
+
 program = util.read_line("input/07.txt")
-permutations = itertools.permutations(range(5))
-result = 0
-
-for phases in permutations:
-    output = 0
-
-    for phase in phases:
-        memory = list(map(int, program.split(",")))
-        output = execute(memory, [phase, output])
-
-    result = max(result, output)
-
-print(result)
+memory = list(map(int, program.split(",")))
+util.run(part1, part2, memory)
