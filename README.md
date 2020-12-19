@@ -1,3 +1,3 @@
-# aoc-2020
+# advent-of-code
 
-Solutions for Advent of Code 2020.
+Solutions for Advent of Code.
