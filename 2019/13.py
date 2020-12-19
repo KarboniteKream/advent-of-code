@@ -1,12 +1,13 @@
 import util
 
 
-def execute(memory):
-    ptr = 0
-    base = 0
+def execute(state, screen, objects=[]):
+    memory, ptr, base = state
+    block = []
 
-    objects = []
-    data = []
+    score = 0
+    paddle = 0
+    ball = 0
 
     while ptr < len(memory):
         instruction = memory[ptr]
@@ -15,7 +16,7 @@ def execute(memory):
         modes = instruction // 100
 
         if opcode == 99:
-            return objects
+            return score
 
         if opcode == 1:
             arg1 = util.get_arg(memory, ptr, modes, 1, base)
@@ -31,16 +32,27 @@ def execute(memory):
             ptr += 4
         elif opcode == 3:
             dst = util.get_arg(memory, ptr, modes, 1, base, True)
-            memory[dst] = int(input("> "))
+            memory[dst] = (ball > paddle) - (ball < paddle)
             ptr += 2
         elif opcode == 4:
             value = util.get_arg(memory, ptr, modes, 1, base)
-            data.append(value)
+            block.append(value)
             ptr += 2
 
-            if len(data) == 3:
-                objects.append((data[0], data[1], data[2]))
-                data = []
+            if len(block) == 3:
+                x, y, value = block
+                objects.append((x, y, value))
+                block = []
+
+                if x >= 0 and y >= 0:
+                    screen[y][x] = value
+                else:
+                    score = value
+
+                if value == 3:
+                    paddle = x
+                elif value == 4:
+                    ball = x
         elif opcode == 5:
             arg1 = util.get_arg(memory, ptr, modes, 1, base)
             arg2 = util.get_arg(memory, ptr, modes, 2, base)
@@ -66,15 +78,28 @@ def execute(memory):
             ptr += 2
 
 
+def part1(memory, screen):
+    state = [list(memory), 0, 0]
+    objects = []
+    execute(state, screen, objects)
+
+    result = 0
+    for _, _, type in objects:
+        if type == 2:
+            result += 1
+
+    return result
+
+
+def part2(memory, screen):
+    memory = list(memory)
+    memory[0] = 2
+    state = [memory, 0, 0]
+    return execute(state, screen)
+
+
 program = util.read_line("input/13.txt")
 memory = list(map(int, program.split(",")))
 memory += [0] * 10000
-
-objects = execute(memory)
-result = 0
-
-for _, _, type in objects:
-    if type == 2:
-        result += 1
-
-print(result)
+screen = [[0 for x in range(38)] for y in range(21)]
+util.run(part1, part2, memory, screen)

@@ -20,9 +20,8 @@ def execute(memory, noun, verb):
     return memory[0]
 
 
-def part1(program):
-    memory = list(map(int, program.split(",")))
-
+def part1(memory):
+    memory = list(memory)
     memory[1] = 12
     memory[2] = 2
 
@@ -41,17 +40,17 @@ def part1(program):
     return memory[0]
 
 
-def part2(program):
+def part2(memory):
     expected = 19690720
 
     for noun in range(100):
         for verb in range(100):
-            memory = list(map(int, program.split(",")))
-            result = execute(memory, noun, verb)
+            result = execute(list(memory), noun, verb)
 
             if result == expected:
                 return 100 * noun + verb
 
 
 program = util.read_line("input/02.txt")
-util.run(part1, part2, program)
+memory = list(map(int, program.split(",")))
+util.run(part1, part2, memory)
