@@ -4,20 +4,11 @@ import util
 
 def part1(passports):
     fields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
+
     valid = 0
-
     for passport in passports:
-        ok = True
-
-        for field in fields:
-            if field not in passport:
-                ok = False
-                break
-
-        if not ok:
-            continue
-
-        valid += 1
+        if all(field in passport for field in fields):
+            valid += 1
 
     return valid
 
@@ -25,17 +16,10 @@ def part1(passports):
 def part2(passports):
     fields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
     ecls = {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"}
+
     valid = 0
-
     for passport in passports:
-        ok = True
-
-        for field in fields:
-            if field not in passport:
-                ok = False
-                break
-
-        if not ok:
+        if not all(field in passport for field in fields):
             continue
 
         byr = passport["byr"]
