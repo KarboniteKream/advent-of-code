@@ -1,11 +1,9 @@
+import itertools
 import util
 
 
-DIRECTIONS = [
-    (-1, -1), (-1, 0), (-1, 1),
-    ( 0, -1),          ( 0, 1),
-    ( 1, -1), ( 1, 0), ( 1, 1),
-]
+def get_deltas():
+    return list(itertools.product([-1, 0, 1], repeat=2))
 
 
 def get_seat(layout, y, x):
@@ -18,7 +16,10 @@ def get_seat(layout, y, x):
 def count_occupied_adjacent(layout, y, x):
     count = 0
 
-    for dy, dx in DIRECTIONS:
+    for dy, dx in get_deltas():
+        if dy == 0 and dx == 0:
+            continue
+
         seat = get_seat(layout, y + dy, x + dx)
         count += (seat == "#")
 
@@ -28,7 +29,10 @@ def count_occupied_adjacent(layout, y, x):
 def count_occupied_direction(layout, y, x):
     count = 0
 
-    for dy, dx in DIRECTIONS:
+    for dy, dx in get_deltas():
+        if dy == 0 and dx == 0:
+            continue
+
         for d in range(1, 100):
             seat = get_seat(layout, y + (d * dy), x + (d * dx))
 
